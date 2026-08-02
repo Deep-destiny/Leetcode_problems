@@ -22,5 +22,4 @@ class Solution {
 
         return t[i][j]=Math.max(take_i,take_j);
     }
-
 }
