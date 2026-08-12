@@ -1,21 +1,38 @@
 class Solution {
     public int minimumChairs(String s) {
-        int distinct_chairs=0;
-        int curr_chairs=0;
+           int c=0,d=0;
         for(char ch:s.toCharArray()){
-            if(ch=='E'){
-                curr_chairs++;
-                distinct_chairs=Math.max(curr_chairs,distinct_chairs);
+            if(ch=='E') {
+                c++;
+                d=Math.max(d,c);
             }
             else{
-                if(curr_chairs>0){
-                    curr_chairs--;
+                if(c>0){
+                    c--;
                 }
                 else{
-                    distinct_chairs++;
+                    d++;
                 }
             }
         }
-        return distinct_chairs;
+        return d;
     }
 }
+    //     int distinct_chairs=0;
+    //     int curr_chairs=0;
+    //     for(char ch:s.toCharArray()){
+    //         if(ch=='E'){
+    //             curr_chairs++;
+    //             distinct_chairs=Math.max(curr_chairs,distinct_chairs);
+    //         }
+    //         else{
+    //             if(curr_chairs>0){
+    //                 curr_chairs--;
+    //             }
+    //             else{
+    //                 distinct_chairs++;
+    //             }
+    //         }
+    //     }
+    //     return distinct_chairs;
+    // }
