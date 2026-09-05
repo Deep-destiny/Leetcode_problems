@@ -1,0 +1,25 @@
+class Solution {
+    public int firstStableIndex(int[] nums, int k) {
+
+        /*
+
+        0 -> i maax 
+        i -> n-1 min
+        score= max-min
+
+        */
+        int n=nums.length;
+        int [] right=new int[n];
+        if(n==1) return 0;
+        right[n-1]=nums[n-1];
+        for(int i=n-2;i>=0;i--){
+            right[i]=Math.min(nums[i],right[i+1]);
+        }
+        int left=nums[0];
+        for(int i=0;i<=n-1;i++){
+           left=Math.max(left,nums[i]);
+           if(left-right[i]<=k) return i;     
+        }
+        return -1;
+    }
+}
