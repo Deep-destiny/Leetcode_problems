@@ -6,14 +6,9 @@ class Solution {
 
         */
         if(n<1000) return 0;
-        int cnt=0;
-        for(int i=1000;i<=n;i++){
-            int temp=i;
-            while(temp>0){
-                temp/=1000;
-                if(temp!=0) cnt++;
-            }
-        }
-        return cnt;
+        return (n - 1000) +1;
     }
+    /*
+    optimized  return n-1000 +1
+    */
 }
