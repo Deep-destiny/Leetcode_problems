@@ -1,29 +1,52 @@
+
+class DSU{
+        int[] par;
+        int[] rank;
+    public DSU(int n){
+        par=new int[n+1];
+        rank=new int[n+1];
+        for(int i=1;i<=n;i++){
+            par[i]=i;
+            rank[i]=0;
+        }
+    }
+
+    public int find(int x){
+        if(x==par[x]) return x;
+        return par[x]=find(par[x]); // path compression
+    }
+    public void union (int x,int y){
+        int x_par=find(x);
+        int y_par=find(y);
+        if(x_par == y_par) return ;
+        if(rank[x_par]> rank[y_par]){
+            par[y_par]=x_par;
+        }
+       else if(rank[x_par] < rank[y_par]){
+            par[x_par]=y_par;
+        }
+        else{
+            par[y_par]=x_par;
+            rank[x_par]++;
+                    }
+    }
+
+}
+
 class Solution {
     public int[] findRedundantConnection(int[][] edges) {
-        int V=edges.length;
-        ArrayList<ArrayList<Integer>> adj=new ArrayList<>();
-       
-        for(int i=0;i<=V;i++){
-            adj.add(new ArrayList<>());
+
+        int n=edges.length;
+        DSU dsu=new DSU(n);
+     for(int []e:edges){
+        int u=e[0];
+        int v=e[1];
+
+        if(dsu.find(u)==dsu.find(v)){
+            return e;
         }
-        for(int []e:edges){
-            int u=e[0];
-            int v=e[1];
-             boolean [] vis=new boolean[V+1];
-             if(dfs(adj,u,v,vis)) return e;
-            adj.get(u).add(v);
-            adj.get(v).add(u);
-        }
-        return new int[0];
+        dsu.union(u,v);
+     }
+     return new int[0];
     }
-    private boolean dfs(  ArrayList<ArrayList<Integer>> adj,int u,int v,boolean [] vis){
-        vis[u]=true;
-        if(u==v) return true;
-        for(int nei:adj.get(u)){
-            if(vis[nei]) continue;
-            
-              if( dfs(adj,nei,v,vis) ) return true;
-            }
-            return false;
-        }
 }
