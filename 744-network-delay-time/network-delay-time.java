@@ -1,77 +1,39 @@
 class Solution {
-
-
-static class Pair{
-    int u;
-    int v;
-    int w;
-    Pair(int u,int v,int w){
-        this.u=u;
-        this.v=v;
-        this.w=w;
-    }
-}
-
     public int networkDelayTime(int[][] times, int n, int k) {
-        
-        // Adjacency List
+        ArrayList<ArrayList<int[]>> adj=new ArrayList<>();
+        for(int i=0;i<=n;i++) adj.add(new ArrayList<>());
+        for (int[] t : times) {
+    int u = t[0];
+    int v = t[1];
+    int wt = t[2];
 
-        List<List<Pair>> graph = new ArrayList<>();
-        for(int i=0;i<=n;i++){
-            graph.add(new ArrayList<>());
-        }
-
-    for(int []t:times){
-        int u=t[0];
-        int v=t[1];
-        int w=t[2];
-        graph.get(u).add(new Pair(u,v,w));
-    }
-
-
-int []dist=new int[n+1];
-Arrays.fill(dist,Integer.MAX_VALUE);
-
+    adj.get(u).add(new int[]{v, wt});
+}
+        int[] dist= new int[n+1];
+        Arrays.fill(dist,Integer.MAX_VALUE);
         dist[k]=0;
-
-        // pq store     {node,dist}
-        PriorityQueue<int[]> pq=new PriorityQueue<>((a,b)->a[1]-b[1]);
-pq.offer(new int[]{k,0});
-
-while(!pq.isEmpty()){
-    int[] curr=pq.poll();
-    int node=curr[0];
-    int currdist=curr[1];
-
-    if(currdist>dist[node]){
-        continue;
-    }
-
-    for(Pair edge:graph.get(node)   ){
-        int nxt=edge.v;
-        int wt=edge.w;
-
-       if(  currdist + wt<dist[nxt] ){
-        dist[nxt]=   currdist+wt;
-        pq.offer(new int[]{nxt,dist[nxt]});
-       }
-    }
-}
-int ans=0;
-
-
-for(int i=1;i<=n;i++){
-    if(dist[i]==Integer.MAX_VALUE){
-        return -1;
-    }
-    ans=Math.max(ans,dist[i]);
-}
-return ans;
+        PriorityQueue<int[]> pq=new PriorityQueue<>( (a,b)-> a[0]-b[0]);
+        pq.offer(new int[]{0,k});
+    while(!pq.isEmpty()){
+            int []top=pq.poll();
+            int d=top[0];
+            int u=top[1];
+            if(d> dist[u]) continue;
+            for(int[] p:adj.get(u)){
+                int v=p[0];
+                int wt=p[1];
+                if(dist[u]+wt< dist[v]){
+                    dist[v]=dist[u]+wt;
+                    pq.offer(new int[]{dist[v],v});
+                }
+            }
+        }
+        int max=-1;
+        for(int i=1;i<=n;i++){
+           if(dist[i]==Integer.MAX_VALUE) return -1;
+           max=Math.max(max,dist[i]);
+        }
+        
+    return max==Integer.MAX_VALUE?-1:max;
     }
 }
-
-
-
-
-
-
