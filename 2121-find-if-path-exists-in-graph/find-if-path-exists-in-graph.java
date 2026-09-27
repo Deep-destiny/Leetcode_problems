@@ -1,31 +1,45 @@
+class DSU{
+    int []par;
+    int [] rank;
+    public DSU(int n){
+        par=new int[n];
+        rank=new int[n];
+        for(int i=1;i<n;i++){
+            par[i]=i;
+            rank[i]=0;
+        }
+    }
+    public int findPar(int x){
+        if(x==par[x]) return x;
+        return par[x]=findPar(par[x]);
+    }
+    public void union(int x,int y){
+            int x_par=findPar(x);
+            int y_par=findPar(y);
+            if(x_par == y_par) return ;
+            if(rank[x_par]<rank[y_par]){
+                par[x_par]= y_par;
+            }
+            else if(rank[x_par]>rank[y_par]){
+                par[y_par]=x_par;
+            }
+            else {
+                par[y_par]=x_par;
+                rank[x_par]++;
+            }
+    }
+
+}
+
 class Solution {
     public boolean validPath(int n, int[][] edges, int source, int destination) {
-        // 1st approach ->dfs
-       List<Integer>[] adj = new ArrayList[n];
-
-        for (int i = 0; i < n; i++) {
-            adj[i] = new ArrayList<>();
-        }
-
-        for (int[] edge : edges) {
-            int u = edge[0];
-            int v = edge[1];
-
-            adj[u].add(v);
-            adj[v].add(u);
-        }
-
-        boolean [] vis=new boolean[n];
-        return dfsPathExist(source,destination,adj,vis);
+       // 2nd dsu
+    DSU dsu=new DSU(n);
+    for(int [] e:edges){
+        int u=e[0];
+        int v=e[1];
+        dsu.union(u,v);
     }
-    private boolean dfsPathExist(int node,int dest,List<Integer>[] adj,boolean [] vis){
-        if(node==dest) return true;
-        vis[node]=true;
-        for(int nei:adj[node]){
-            if(!vis[nei]) {
-                if(dfsPathExist(nei,dest,adj,vis)) return true;
-            }
-        }
-        return false;
-    }
+    return dsu.findPar(source)==dsu.findPar(destination);
+}
 }
