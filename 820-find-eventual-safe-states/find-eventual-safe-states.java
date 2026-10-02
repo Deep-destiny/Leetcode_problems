@@ -4,65 +4,59 @@ class Solution {
 
         int V = graph.length;
 
-        ArrayList<Integer> list = new ArrayList<>();
+        // Reverse graph
+        List<List<Integer>> adjRev = new ArrayList<>();
+
+        for (int i = 0; i < V; i++) {
+            adjRev.add(new ArrayList<>());
+        }
+
+        int[] indegree = new int[V];
+
+        // i -> it
+        // reverse: it -> i
+        for (int i = 0; i < V; i++) {
+
+            for (int it : graph[i]) {
+
+                adjRev.get(it).add(i);
+
+                indegree[i]++;
+            }
+        }
+
+        Queue<Integer> q = new LinkedList<>();
 
         // Terminal nodes
         for (int i = 0; i < V; i++) {
-            if (graph[i].length == 0) {
-                list.add(i);
+
+            if (indegree[i] == 0) {
+                q.add(i);
             }
         }
 
-        boolean[] vis = new boolean[V];
-        boolean[] safe = new boolean[V];
+        List<Integer> safeNodes = new ArrayList<>();
 
-        for (int i = 0; i < V; i++) {
-            DfsMila(i, graph, vis, safe, list);
-        }
+        while (!q.isEmpty()) {
 
-        ArrayList<Integer> ans = new ArrayList<>();
+            int node = q.peek();
+            q.remove();
 
-        for (int i = 0; i < V; i++) {
-            if (safe[i]) {
-                ans.add(i);
+            safeNodes.add(node);
+
+            // Traverse reverse graph
+            for (int it : adjRev.get(node)) {
+
+                indegree[it]--;
+
+                if (indegree[it] == 0) {
+                    q.add(it);
+                }
             }
         }
 
-        return ans;
-    }
+        Collections.sort(safeNodes);
 
-    private boolean DfsMila(int curr, int[][] graph,
-                            boolean[] vis,
-                            boolean[] safe,
-                            ArrayList<Integer> list) {
-
-        if (list.contains(curr)) {
-            safe[curr] = true;
-            return true;
-        }
-
-        if (safe[curr]) {
-            return true;
-        }
-
-        if (vis[curr]) {
-            return false;
-        }
-
-        vis[curr] = true;
-
-        for (int ngh : graph[curr]) {
-
-            if (!DfsMila(ngh, graph, vis, safe, list)) {
-                return false;
-            }
-        }
-
-        safe[curr] = true;
-
-        // Backtracking: current node path se remove
-        vis[curr] = false;
-
-        return true;
+        return safeNodes;
     }
 }
