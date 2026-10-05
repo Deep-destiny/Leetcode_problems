@@ -1,22 +1,28 @@
 class Solution {
+    int [][]dirs={
+        {1,0},
+        {1,1}
+    };
+    int m;
+    int n;
     public int minimumTotal(List<List<Integer>> triangle) {
-       
-        int n=triangle.size();
-        int[][] dp =new int[n][n];
-     
-      
-        
-        for(int j=0;j<n;j++){
-            dp[n-1][j]=triangle.get(n-1).get(j);
-        }
-        for(int i=n-2;i>=0;i--){
-            for(int j=i;j>=0;j--){
-                int d=triangle.get(i).get(j)+dp[i+1][j];
-                int dg=triangle.get(i).get(j)+dp[i+1][j+1];
-                dp[i][j]=Math.min(d,dg);
+        m=triangle.size();
+       int[][]dp=new int[m+1][m+1];
+       for(int[]t:dp)Arrays.fill(t,Integer.MAX_VALUE);
+       return solve(0,0,triangle,dp);
+    }
+    private int solve(int r,int c,List<List<Integer>> triangle,int[][] dp){
+        if(r==m-1) return triangle.get(r).get(c);
+        if(dp[r][c]!=Integer.MAX_VALUE) return dp[r][c];
+        int min=Integer.MAX_VALUE;
+        for(int[]d:dirs){
+            int nr=r+d[0];
+            int nc=c+d[1];
+            if( nr<m && nc<triangle.get(nr).size()){
+                int path=triangle.get(r).get(c)+solve(nr,nc,triangle,dp);
+                min=Math.min(path,min);
             }
         }
-        return dp[0][0];
-
+        return dp[r][c]=min;
     }
 }
