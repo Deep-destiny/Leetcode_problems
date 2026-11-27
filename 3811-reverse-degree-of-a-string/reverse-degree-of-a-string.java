@@ -1,11 +1,12 @@
 class Solution {
     public int reverseDegree(String s) {
         int sum=0;
-     for(int i=0;i<s.length();i++){
-        int idx=s.charAt(i)-'a';
-        int rev=26-idx;
-        sum+=rev*(i+1);
-     }
-     return sum;
+        int j=1;
+        for(char ch:s.toCharArray()){
+           int ind='z'- ch + 1;
+            sum+= (j * ind);
+            j++;
+        }
+        return sum;
     }
 }
