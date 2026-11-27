@@ -1,30 +1,25 @@
 class Solution {
     public int coinChange(int[] coins, int amount) {
-        int n=coins.length;
-        int[][] dp=new int[n][amount+1];
+        // min number of coins needed to make amount
+        int[][]dp= new int[coins.length][amount+1];
         for(int []r:dp){
         Arrays.fill(r,-1);
         }
-        int ans=helper(n-1,coins,amount,dp);
-        return ans >= (int)1e9 ? -1 : ans;
+        int ans=rec(0,amount,coins,dp);
+        return ans>=(int)1e9?-1:ans;
     }
-    private int helper(int last,int[] coins,int amt,int[][] dp){
-
-            if(last==0){
-                if(amt%coins[0]==0) return amt/coins[0];
-                return  (int)1e9;
-            }
-            if(dp[last][amt]!=-1){
-                return dp[last][amt];
-            }
+    private int rec(int idx,int amount,int[] coins,int[][] dp){
+        if(amount==0)return 0;
+         if(idx==coins.length) return (int)1e9;
+        if(dp[idx][amount]!=-1) return dp[idx][amount];
+       
 
         int pick=(int)1e9;
-        if(coins[last]<=amt){
-         pick=1+helper(last,coins,amt-coins[last],dp);
+        if(coins[idx]<=amount){
+        pick=1+rec(idx,amount-coins[idx],coins,dp);
         }
-        int notpick=helper(last-1,coins,amt,dp);
-        
-            return dp[last][amt]= Math.min(pick,notpick);
-    }
+        int notpick=rec(idx+1,amount,coins,dp);
+        return dp[idx][amount]=Math.min(pick,notpick);
 
+    }
 }
